@@ -39,7 +39,7 @@ void USwapTileCommand::Execute()
 
 	//타일 Swap 후 매칭 확인
 	TArray<ANewTile*> MatcingTiles = TileGrid->CheckForMatches();
-	UE_LOG(LogTemp, Warning, TEXT("Execute??? %d"), MatcingTiles.Num());
+	
 	if(MatcingTiles.Num() > 0)
 	{
 		//매칭된 타일 삭제
@@ -48,21 +48,9 @@ void USwapTileCommand::Execute()
 	else
 	{
 		//매칭이 없을 경우, 타일 원래대로
-		//Undo();
+		UE_LOG(LogTemp, Warning, TEXT("Undo"));
+		Undo();
 	}
-	
-	/*
-	//두 타일의 위치를 서로 교환
-	FirstTile->SetActorLocation(SecondTileOriginalLocation);
-	SecondTile->SetActorLocation(FirstTileOriginalLocation);
-
-	//매칭 확인 등의 로직 필요
-	
-	//그리드 좌표도 교체
-	FVector2D TempPosition = FirstTile->TilePosition;
-	FirstTile->UpdateTilePosition(SecondTile->TilePosition);
-	SecondTile->UpdateTilePosition(TempPosition);
-	*/
 }
 
 void USwapTileCommand::Undo()

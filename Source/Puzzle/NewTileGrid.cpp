@@ -14,8 +14,8 @@ ANewTileGrid::ANewTileGrid()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	GridWidth = 4;
-	GridHeigth = 3;
+	GridWidth = 6;
+	GridHeigth = 7;
 	TileSpacing = 100.f;
 
 	TileArray.SetNum(GridWidth * GridHeigth);	//전체 Size
@@ -231,7 +231,7 @@ TArray<ANewTile*> ANewTileGrid::CheckForMatches()
 void ANewTileGrid::SwapTiles(ANewTile* FirstTile, ANewTile* SecondTile)
 {
 	int x1, y1, x2, y2;
-
+	UE_LOG(LogTemp, Warning, TEXT("Swapppp"));
 	if(GetTileGridPosition(FirstTile, x1, y1) && GetTileGridPosition(SecondTile, x2, y2))
 	{
 		//타일 배열 업데이트
@@ -270,6 +270,11 @@ void ANewTileGrid::RemoveMatchingTiles(const TArray<ANewTile*>& MatchingTiles)
 		}
 	}
 	DropDownTiles();
+
+	//TODO: 점수 확인
+
+	//이후 매칭 루프 처리
+	ProcessMatchingLoop();
 }
 
 void ANewTileGrid::DropDownTiles()
@@ -317,11 +322,12 @@ TArray<ANewTile*> ANewTileGrid::CheckHorizontalMatches(int32 StartX, int32 Start
 	}
 
 	HorizontalMatches.Add(StartTile);
-
+	UE_LOG(LogTemp, Warning, TEXT("StartY is %d"), StartY);
 	//오른쪽으로 2칸까지 같은 타일인지 확인
 	for(int32 x = (StartX + 1); x < GridWidth; ++x)
 	{
 		ANewTile* NewTile = GetTileAt(x, StartY);
+		
 		if(NewTile && NewTile->TileType == StartTile->TileType)
 		{
 			HorizontalMatches.Add(NewTile);
@@ -348,9 +354,9 @@ TArray<ANewTile*> ANewTileGrid::CheckVerticalMatches(int32 StartX, int32 StartY)
 	VerticalMatches.Add(StartTile);
 
 	//오른쪽으로 2칸까지 같은 타일인지 확인
-	for(int32 x = StartX + 1; x < GridHeigth; ++x)
+	for(int32 y = StartX + 1; y < GridHeigth; ++y)
 	{
-		ANewTile* NewTile = GetTileAt(x, StartY);
+		ANewTile* NewTile = GetTileAt(StartX, y);
 		if(NewTile && NewTile->TileType == StartTile->TileType)
 		{
 			VerticalMatches.Add(NewTile);
@@ -411,6 +417,34 @@ void ANewTileGrid::RefillGrid()
 				}
 			}
 		}
+	}
+
+	//또 다른 매칭이 있는지 확인
+	ProcessMatchingLoop();
+}
+
+void ANewTileGrid::ProcessMatchingLoop()
+{
+	//매칭이 있는지 확인
+	TArray<ANewTile*> MatchingTiles = CheckForMatches();
+
+	if(MatchingTiles.Num() > 0)
+	{
+		//매칭된 타일이 있을 경우 삭제
+		RemoveMatchingTiles(MatchingTiles);
+
+		//타일을 빈 공간으로 이동
+		DropDownTiles();
+
+		//빈 공간에 새로운 타일 채우기
+		RefillGrid();
+
+		//모든 작업이 끝난 후 다시 매칭 확인을 위한 재귀 호출
+		ProcessMatchingLoop();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("No more matching Tiles"));
 	}
 }
 

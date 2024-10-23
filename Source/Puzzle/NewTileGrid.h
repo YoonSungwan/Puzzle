@@ -66,11 +66,12 @@ public:
 
 	void RefillGrid();
 
-	FName GenerateRandomTileType();
+	void ProcessMatchingLoop();
 
 private:
 	
 	TArray<ANewTile*> CheckHorizontalMatches(int32 StartX, int32 StartY);
 	TArray<ANewTile*> CheckVerticalMatches(int32 StartX, int32 StartY);
-	
+
+	FName GenerateRandomTileType();
 };
