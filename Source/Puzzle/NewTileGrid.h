@@ -33,8 +33,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Grid")
 	int32 GridHeigth;
 
+	//타일 간 배치 간격
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Grid")
+	float TileSpacing;
+
 	UPROPERTY()
 	TArray<ANewTile*> TileArray;
+
+	//타일을 생성한 ANewTile 레퍼런스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Grid")
+	TSubclassOf<ANewTile> TileClass;
 
 	//그리드 초기화 함수
 	void InitializeGrid();
@@ -45,4 +53,24 @@ public:
 	//특정 위치의 타일을 설정하는 함수
 	void SetTileAt(int32 x, int32 y, ANewTile* Tile);
 
+	//매칭을 확인 여부 Array
+	TArray<ANewTile*> CheckForMatches();
+
+	//Swap 함수
+	void SwapTiles(ANewTile* FirstTile, ANewTile* SecondTile);
+
+	void RemoveMatchingTiles(const TArray<ANewTile*>& MatchingTiles);
+	void DropDownTiles();
+
+	bool GetTileGridPosition(ANewTile* Tile, int32& OutX, int32& OutY) const;
+
+	void RefillGrid();
+
+	FName GenerateRandomTileType();
+
+private:
+	
+	TArray<ANewTile*> CheckHorizontalMatches(int32 StartX, int32 StartY);
+	TArray<ANewTile*> CheckVerticalMatches(int32 StartX, int32 StartY);
+	
 };

@@ -28,7 +28,7 @@ void AMatch3GameMode::BeginPlay()
 	}*/
 
 	//Observer 주체(subject) 생성
-	UGameStateSubject* ObserverGameState = NewObject<UGameStateSubject>();
+	/*UGameStateSubject* ObserverGameState = NewObject<UGameStateSubject>();
 	
 	if(widget)
 	{
@@ -45,8 +45,8 @@ void AMatch3GameMode::BeginPlay()
 			/*
 			 * UGameStateSubject* ObserverGameState = Cast<UGameStateSubject>(...);
 			 * ObserverGameState->IncreaseScore()
-			 */
+			 #1#
 		}
-	}
+	}*/
 	
 }

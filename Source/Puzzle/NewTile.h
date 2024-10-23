@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "NewTile.generated.h"
 
-class ANewTile;
+class ANewTileGrid;
 
 UCLASS()
 class PUZZLE_API ANewTile : public AActor
@@ -17,9 +17,19 @@ public:
 	// Sets default values for this actor's properties
 	ANewTile();
 
+	//타일이 선택되었는지 여부
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile")
+	bool bIsSelected;
+
+	//타일을 선택 또는 해제하는 함수
+	void SetSelected(bool bSelected);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//타일이 선택되면 시각적으로 상태가 업데이트
+	void Updateppearance();
 
 public:	
 	// Called every frame
@@ -35,4 +45,25 @@ public:
 	bool IsMatching(ANewTile* otherTile) const;
 
 	void ProcessDataInParallel();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
+	UStaticMeshComponent* TileMeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
+	TMap<FName, UStaticMesh*> TileMeshes;
+	
+	//타일의 외형을 TileType에 따라 설정하는 함수
+	void UpdateTileAppearance();
+
+	//타일의 2D(그리드) 좌표에서의 위치
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
+	FVector2D TilePosition;
+
+	//다른 타입과 인접 여부를 확인하는 함수
+	bool IsAdjacentTo(ANewTile* otherTile) const;
+
+	//타일의 위치를 변경할 때, 그리드 상의 위치 업데이트 함수
+	void UpdateTilePosition(const FVector2D& NewPosition);
+
+	ANewTileGrid* TileGrid;
 };
